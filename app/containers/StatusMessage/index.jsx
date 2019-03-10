@@ -1,13 +1,15 @@
+import _ from 'lodash'
 import { connect } from 'react-redux'
-import Status from '../../components/common/Status/index.jsx'
+import List from '../../components/races/List/index.jsx'
 
-function mapStateToProps (state) {
-  const status = state.user.status
-  return status
+function mapStateToProps (state, ownProps) {
+  return {
+    races: _.slice(state.races, 0, ownProps.length)
+  }
 }
 
-const StatusMessage = connect(
+const RacesList = connect(
   mapStateToProps
-)(Status)
+)(List)
 
-export default StatusMessage
+export default RacesList

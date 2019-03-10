@@ -1,43 +1,41 @@
-import Hamsters from '../scenes/Hamsters/index.jsx'
-import Hamster from '../scenes/Hamster/index.jsx'
-import Login from '../scenes/Login/index.jsx'
-import Main from '../scenes/Main/index.jsx'
-import Race from '../scenes/Race/index.jsx'
-import Races from '../scenes/Races/index.jsx'
-import Leaderboards from '../scenes/Leaderboards/index.jsx'
-import User from '../scenes/User/index.jsx'
-import Config from '../scenes/Config/index.jsx'
+import sa from 'superagent'
+import { connect } from 'react-redux'
+import { info } from '../../actions/user'
+import Detail from '../../components/user/Detail/index.jsx'
 
-const routes = [
-  {
-    path: '/',
-    exact: true,
-    component: Main
-  }, {
-    path: '/hamsters',
-    component: Hamsters
-  }, {
-    path: '/hamster/:id',
-    component: Hamster
-  }, {
-    path: '/login',
-    component: Login
-  }, {
-    path: '/races',
-    component: Races
-  }, {
-    path: '/race/:id',
-    component: Race
-  }, {
-    path: '/leaderboards',
-    component: Leaderboards
-  }, {
-    path: '/user',
-    component: User
-  }, {
-    path: '/config',
-    component: Config
+function mapStateToProps (state) {
+  return {
+    user: state.user
   }
-]
+}
 
-export default routes
+function mapDispatchToProps (dispatch) {
+  return {
+    fetch: () => fetch(dispatch)
+  }
+}
+
+function fetch (dispatch) {
+  return new Promise((resolve, reject) => {
+    sa
+      .get('user')
+      .set('Accept', 'application/json')
+      .end((err, res) => {
+        if (err) {
+          console.error(err)
+          reject(err)
+        } else {
+          console.log(res)
+          dispatch(info(res))
+          resolve(res)
+        }
+      })
+  })
+}
+
+const UserDetail = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Detail)
+
+export default UserDetail

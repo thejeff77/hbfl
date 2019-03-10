@@ -1,22 +1,19 @@
-import { connect } from 'react-redux'
-import Simulation from '../../components/config/Simulation/index.jsx'
-import { start, stop, reset } from '../../actions/simulation.js'
+import React from 'react'
+import Header from '../Header/index.jsx'
+import Footer from '../Footer/index.jsx'
+import StatusMessage from '../../../containers/StatusMessage/index.jsx'
 
-function mapStateToProps () {
-  return {}
-}
-
-function mapDispatchToProps (dispatch) {
-  return {
-    start: () => { dispatch(start()) },
-    stop: () => { dispatch(stop()) },
-    reset: () => { dispatch(reset()) }
+class Layout extends React.Component {
+  render () {
+    return (
+      <div className={this.props.className}>
+        <Header />
+        <StatusMessage />
+        {this.props.children}
+        <Footer />
+      </div>
+    )
   }
 }
 
-const Config = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Simulation)
-
-export default Config
+export default Layout

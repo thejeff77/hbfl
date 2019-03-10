@@ -1,21 +1,19 @@
-@import '../../../styles/mixins.less';
+.status {
+  position: absolute;
+  right: 15px;
+  top: 90px;
+  border-radius: 3px;
+  padding: 8px;
 
-.section {
+  &.info {
+    color: grey;
+    border: grey 1px solid;
+    background-color: lightgrey;
+  }
 
-  > button {
-    background-color: @mauve;
-    border: 0;
-    color: white;
-    border-radius: 5px;
-    padding: 16px;
-    font-size: 1.1em;
-    font-weight: 300;
-    margin-bottom: 25px;
-    cursor: pointer;
-
-    &:hover,
-    &:focus {
-      opacity: .9;
-    }
+  &.alert {
+    border: 1px solid #d4401c;
+    background-color: rgba(212, 64, 28, 0.14);
+    color: #d4401c;
   }
 }

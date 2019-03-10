@@ -1,14 +1,24 @@
 import { connect } from 'react-redux'
-import Login from '../../components/common/Login/index.jsx'
+import { doLogin } from '../../actions/user.js'
+import Form from '../../components/login/Form/index.jsx'
 
-function mapStateToProps (state, ownProps) {
+function mapDispatchToProps (dispatch, ownProps) {
   return {
-    user: state.user
+    submit: (username, password) => {
+      dispatch(doLogin(username, password))
+    }
   }
 }
 
-const LoginHeader = connect(
-  mapStateToProps
-)(Login)
+function mapStateToProps (state) {
+  return {
+    error: state.user.loginError
+  }
+}
 
-export default LoginHeader
+const LoginForm = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Form)
+
+export default LoginForm

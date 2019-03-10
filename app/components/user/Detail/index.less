@@ -1,18 +1,32 @@
 @import '../../../styles/mixins.less';
 
-.name {
-  font-size: 2em;
-  font-weight: 300;
-  font-style: italic;
-  color: @mauve;
-  margin-bottom: 18px;
+.table {
+  width: 100%;
+  border-spacing: 0;
 
-  .nameTitle {
-    font-weight: 900;
+  th {
+    padding: 8px;
   }
-}
 
-.favTitle {
-  font-size: 1.5em;
-  font-weight: 500;
+  .row {
+    td {
+      padding: 8px;
+      text-align: center;
+      font-weight: 300;
+    }
+
+    a {
+      color: @mauve;
+      font-weight: 500;
+
+      &:hover,
+      &:focus {
+        opacity: .8;
+      }
+    }
+
+    &:nth-child(odd) {
+      background-color: #EAEAEA;
+    }
+  }
 }

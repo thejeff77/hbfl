@@ -1,24 +1,41 @@
 import { connect } from 'react-redux'
-import { doLogin } from '../../actions/user.js'
-import Form from '../../components/login/Form/index.jsx'
+import sa from 'superagent'
+import List from '../../components/leaderboards/List/index.jsx'
+import { update } from '../../actions/leaderboards.js'
 
-function mapDispatchToProps (dispatch, ownProps) {
+function mapStateToProps (state, ownProps) {
   return {
-    submit: (username, password) => {
-      dispatch(doLogin(username, password))
-    }
+    standings: state.leaderboards.standings
   }
 }
 
-function mapStateToProps (state) {
+function mapDispatchToProps (dispatch) {
   return {
-    error: state.user.loginError
+    fetch: () => fetch(dispatch)
   }
 }
 
-const LoginForm = connect(
+function fetch (dispatch) {
+  return new Promise((resolve, reject) => {
+    sa
+      .get('leaderboards')
+      .set('Accept', 'application/json')
+      .end((err, res) => {
+        if (err) {
+          console.error(err)
+          reject(err)
+        } else {
+          console.log(res)
+          dispatch(update(res))
+          resolve(res)
+        }
+      })
+  })
+}
+
+const LeaderboardList = connect(
   mapStateToProps,
   mapDispatchToProps
-)(Form)
+)(List)
 
-export default LoginForm
+export default LeaderboardList

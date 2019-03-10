@@ -1,47 +1,97 @@
-const AWS = require('aws-sdk')
+const handlers = require('../handlers')
 
-const RACES_TABLE = 'races'
-
-AWS.config.update({ region: '/* TODO: Add your region */' })
-
-const client = new AWS.DynamoDB.DocumentClient()
-
-exports.handler = (event, context, callback) => {
-  const promises = event.Records.map((record) => {
-    const payload = Buffer.from(record.kinesis.data, 'base64').toString('ascii')
-    const result = JSON.parse(payload)
-    return putResults(result)
-  })
-
-  Promise.all(promises)
-    .then(() => callback(null))
-    .catch(err => callback(err))
-}
-
-function putResults (result) {
-  return new Promise((resolve, reject) => {
-    const getParams = {
-      TableName: RACES_TABLE,
-      Key: {
-        id: result.race.id
-      }
+module.exports = [
+  {
+    method: 'GET',
+    path: '/',
+    config: {
+      handler: handlers.main,
+      auth: false
     }
-    client.get(getParams, (err, data) => {
-      if (err) {
-        console.error(err)
-      } else {
-        data.Item.results = result.results
-
-        const putParams = {
-          TableName: RACES_TABLE,
-          Item: data.Item
-        }
-
-        client.put(putParams, (err, data) => {
-          if (err) reject(err)
-          else resolve(data)
-        })
-      }
-    })
-  })
-}
+  }, {
+    method: 'GET',
+    path: '/public/{path*}',
+    config: {
+      handler: handlers.public,
+      auth: false
+    }
+  }, {
+    method: 'GET',
+    path: '/hamsters',
+    config: {
+      handler: handlers.hamsters,
+      auth: false
+    }
+  }, {
+    method: 'GET',
+    path: '/hamster/{id}',
+    config: {
+      handler: handlers.hamster,
+      auth: false
+    }
+  }, {
+    method: 'GET',
+    path: '/races',
+    config: {
+      handler: handlers.races,
+      auth: false
+    }
+  }, {
+    method: 'GET',
+    path: '/race/{id}',
+    config: {
+      handler: handlers.race,
+      auth: false
+    }
+  }, {
+    method: 'POST',
+    path: '/login',
+    config: {
+      handler: handlers.user.login,
+      auth: false
+    }
+  }, {
+    method: 'GET',
+    path: '/leaderboards',
+    config: {
+      handler: handlers.leaderboards,
+      auth: false
+    }
+  }, {
+    method: 'GET',
+    path: '/user',
+    config: {
+      handler: handlers.user.info
+    }
+  }, {
+    method: 'POST',
+    path: '/favorite/{id}',
+    config: {
+      handler: handlers.user.favorite
+    }
+  }, {
+    method: 'DELETE',
+    path: '/favorite/{id}',
+    config: {
+      handler: handlers.user.unfavorite
+    }
+  }, {
+    method: 'POST',
+    path: '/simulation/start',
+    config: {
+      handler: handlers.simulation.start
+    }
+  }, {
+    method: 'POST',
+    path: '/simulation/stop',
+    config: {
+      handler: handlers.simulation.stop
+    }
+  }, {
+    method: 'POST',
+    path: '/simulation/reset',
+    config: {
+      handler: handlers.simulation.reset
+    }
+  }
+]

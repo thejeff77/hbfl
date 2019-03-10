@@ -1,41 +1,27 @@
+import _ from 'lodash'
 import { connect } from 'react-redux'
-import sa from 'superagent'
-import List from '../../components/leaderboards/List/index.jsx'
-import { update } from '../../actions/leaderboards.js'
+import Grid from '../../components/hamsters/Grid/index.jsx'
 
 function mapStateToProps (state, ownProps) {
-  return {
-    standings: state.leaderboards.standings
-  }
-}
+  let hamsters = _.slice(state.hamsters, 0, ownProps.length)
 
-function mapDispatchToProps (dispatch) {
-  return {
-    fetch: () => fetch(dispatch)
-  }
-}
-
-function fetch (dispatch) {
-  return new Promise((resolve, reject) => {
-    sa
-      .get('leaderboards')
-      .set('Accept', 'application/json')
-      .end((err, res) => {
-        if (err) {
-          console.error(err)
-          reject(err)
-        } else {
-          console.log(res)
-          dispatch(update(res))
-          resolve(res)
-        }
+  if (state.user.favorites) {
+    hamsters = hamsters.map((hamster) => {
+      return Object.assign({}, hamster, {
+        favorite: !!_.find(state.user.favorites, favorite => favorite.id === hamster.id)
       })
-  })
+    })
+  }
+
+  return {
+    loggedIn: state.user.loggedIn,
+    hamsters,
+    className: ownProps.className
+  }
 }
 
-const LeaderboardList = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(List)
+const HamstersGrid = connect(
+  mapStateToProps
+)(Grid)
 
-export default LeaderboardList
+export default HamstersGrid

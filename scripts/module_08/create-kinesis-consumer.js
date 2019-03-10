@@ -2,7 +2,7 @@
 const AWS = require('aws-sdk')
 const helpers = require('./helpers')
 
-AWS.config.update({ region: '/* TODO: Add your region */' })
+AWS.config.update({ region: 'us-east-1' })
 
 // Declare local variables
 const lambda = new AWS.Lambda()
@@ -44,7 +44,12 @@ function createLambda (roleArn, lambdaName, zippedCode) {
 }
 
 function createTrigger (kinesisArn, lambdaName) {
-  // TODO: Create params const for trigger
+  const params = {
+    EventSourceArn: kinesisArn,
+    FunctionName: lambdaName,
+    StartingPosition: 'LATEST',
+    BatchSize: 100
+  }
 
   return new Promise((resolve, reject) => {
     lambda.createEventSourceMapping(params, (err, data) => {
